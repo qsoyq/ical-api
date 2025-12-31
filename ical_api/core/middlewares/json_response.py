@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse, Response
 
-from python_fastapi_template.core.responses import PrettyJSONResponse
+from ical_api.core.responses import PrettyJSONResponse
 
 app = FastAPI()
 logger = logging.getLogger(__file__)

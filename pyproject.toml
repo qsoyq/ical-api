@@ -1,7 +1,7 @@
 [project]
-name = "python-fastapi-template"
-version = "0.1.1"
-description = "Python fastapi template."
+name = "ical-api"
+version = "0.1.0"
+description = "Calendar subscription api"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -14,7 +14,7 @@ dependencies = [
     "httpx[http2,socks]",
     "hypercorn",
     "pretty-errors",
-    "typer[standard]",
+    "typer",
     "ruff",
     "types-pyyaml",
     "python-multipart",
@@ -26,16 +26,20 @@ dependencies = [
     "cachetools>=5.5.2",
     "click>=8.3.1",
     "requests>=2.32.5",
+    "ics>=0.7.2",
+    "bs4>=0.0.2",
+    "dateparser>=1.2.2",
+    "lxml>=6.0.2",
 ]
 
 [project.scripts]
-python-fastapi-template-server = "python_fastapi_template.main:cmd"
+ical-api-server = "ical_api.main:cmd"
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["python_fastapi_template"]
+packages = ["ical_api"]
 
 [build-system]
 requires = ["hatchling"]
@@ -123,6 +127,9 @@ explicit_package_bases = true
 [[tool.mypy.overrides]]
 module = [
     "asyncache",
+    "bs4",
+    "ics",
+    "ics.*",
 ]
 ignore_missing_imports = true
 follow_untyped_imports = true

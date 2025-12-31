@@ -1,7 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from python_fastapi_template.main import app
+from ical_api.main import app
+from tests import TestSettings
 
 
 @pytest.fixture(scope='module')
@@ -13,3 +14,32 @@ def client():
 def test_redoc(client: TestClient):
     response = client.get('/redoc')
     assert response.status_code == 200
+
+
+def test_vlrgg(client: TestClient):
+    events = [2285]
+    params = {'events': events}
+    response = client.get('/api/ics/vlrgg/event/matches', params=params)
+    assert response.status_code == 200, response.text
+
+
+def test_gofans(client: TestClient):
+    response = client.get('/api/ics/gofans/iOS.ics')
+    assert response.status_code == 200, response.text
+
+    response = client.get('/api/ics/gofans/macOS.ics')
+    assert response.status_code == 200, response.text
+
+
+def test_github_issues(client: TestClient):
+    token = TestSettings().github.test_github_token
+    owner = TestSettings().github.test_github_owner
+    repo = TestSettings().github.test_github_repo
+    assert token and owner and repo
+    params = {
+        'token': token,
+        'owner': owner,
+        'repo': repo,
+    }
+    response = client.get('/api/ics/gofans/macOS.ics', params=params)
+    assert response.status_code == 200, response.text

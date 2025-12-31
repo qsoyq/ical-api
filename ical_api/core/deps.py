@@ -3,7 +3,7 @@ import secrets
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from python_fastapi_template.core.settings import AppSettings
+from ical_api.core.settings import AppSettings
 
 security = HTTPBasic()
 

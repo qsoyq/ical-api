@@ -49,6 +49,9 @@ repos:
                 - httpx
                 - asyncache
                 - pytest
+                - bs4
+                - ics
                 - types-pytz
                 - types-cachetools
                 - types-requests
+                - types-dateparser

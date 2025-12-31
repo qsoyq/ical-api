@@ -3,19 +3,18 @@ import pkgutil
 
 from fastapi import FastAPI
 
-import python_fastapi_template.core.middlewares.errors
-import python_fastapi_template.core.middlewares.json_response
-from python_fastapi_template.core.exception import register_exception_handler
-from python_fastapi_template.core.settings import AppSettings
-from python_fastapi_template.utils.mermaid import load_mermaid_plugin
+import ical_api.core.middlewares.errors
+import ical_api.core.middlewares.json_response
+from ical_api.core.exception import register_exception_handler
+from ical_api.core.settings import AppSettings
+from ical_api.utils.mermaid import load_mermaid_plugin
 
 
-def include_routers(app: FastAPI, module_name: str = 'python_fastapi_template.applications.app'):
+def include_routers(app: FastAPI, module_name: str = 'ical_api.applications'):
     api_prefix = AppSettings().api_prefix
 
     pkg = importlib.import_module(module_name)
     prefix = pkg.__name__ + '.'
-
     for _, mod_name, _ in pkgutil.walk_packages(pkg.__path__, prefix):
         mod = importlib.import_module(mod_name)
         router = getattr(mod, 'router', None)
@@ -25,8 +24,8 @@ def include_routers(app: FastAPI, module_name: str = 'python_fastapi_template.ap
 
 
 def add_middlewares(app: FastAPI):
-    python_fastapi_template.core.middlewares.errors.add_middleware(app)
-    python_fastapi_template.core.middlewares.json_response.add_middleware(app)
+    ical_api.core.middlewares.errors.add_middleware(app)
+    ical_api.core.middlewares.json_response.add_middleware(app)
 
 
 def initial(app: FastAPI):
