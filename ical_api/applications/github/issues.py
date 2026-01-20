@@ -59,11 +59,14 @@ async def github_repo_issues(
     direction: GithubIssueDirection | None = Query(None),
     per_page: int = Query(100, ge=1, le=100),
     page: int | None = Query(None, ge=1),
+    fetch_all: bool = Query(True, description='Fetch all issues, if False, will fetch only the specified page'),
 ):
     """
     参数详见文档: https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
 
     Issue 标题必须包含如 `(@2025-04-18T18:00:00+0800)` 表示截止时间的字符串内容, 否则无法解析为日历事件
+
+    fetch_all 参数用于控制是否获取所有页面的数据, 如果为 False, 则只获取指定页面的数据, 默认值为 True
     """
     url = f"https://api.github.com/repos/{owner}/{repo}/issues"
     headers = {
@@ -95,7 +98,7 @@ async def github_repo_issues(
                 return PlainTextResponse(res.text, status_code=res.status_code)
             issues = list(res.json())
             github_issues.extend([GithubIssue(**issue) for issue in issues])
-            if len(issues) < per_page:
+            if fetch_all is False or len(issues) < per_page:
                 break
 
     events = github_issues_to_calendar(github_issues)
