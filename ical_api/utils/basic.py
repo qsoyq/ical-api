@@ -15,12 +15,12 @@ def optional_chain(obj, keys: str):
         return getattr(obj, key)
 
     try:
-        return reduce(get_value, keys.split('.'), obj)
+        return reduce(get_value, keys.split("."), obj)
     except (AttributeError, KeyError):
         return None
 
 
 def get_date_string_for_shanghai(ts: int) -> str:
     return cast(
-        str, pytz.timezone('Asia/Shanghai').localize(datetime.fromtimestamp(ts)).strftime('%Y-%m-%dT%H:%M:%S%z')
+        str, pytz.timezone("Asia/Shanghai").localize(datetime.fromtimestamp(ts)).strftime("%Y-%m-%dT%H:%M:%S%z")
     )

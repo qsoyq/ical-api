@@ -11,7 +11,7 @@ from ics import Calendar, Event
 
 from ical_api.core.settings import AppSettings
 
-router = APIRouter(tags=['iCalendar'], prefix='/ics/vlrgg')
+router = APIRouter(tags=["iCalendar"], prefix="/ics/vlrgg")
 
 logger = logging.getLogger(__file__)
 
@@ -47,11 +47,11 @@ async def fetch_vlrgg_event_match_time(url: str) -> tuple[str, datetime | None]:
         async with httpx.AsyncClient() as client:
             resp = await client.get(url)
             resp.raise_for_status()
-            document = BeautifulSoup(resp.text, 'lxml')
+            document = BeautifulSoup(resp.text, "lxml")
             tag = document.select_one("div[class='moment-tz-convert']")
             match_datetime = None
             if tag:
-                utc_ts = tag.attrs['data-utc-ts']
+                utc_ts = tag.attrs["data-utc-ts"]
                 utc_ts = f"{utc_ts} EDT"
                 logger.debug(f"[VLRGG Event Match Time]: {utc_ts} - {url}")
                 match_datetime = dateparser.parse(utc_ts)
@@ -81,11 +81,11 @@ async def vlrgg_event_to_calendar(vlrgg_event: str) -> list[Event]:
     async with httpx.AsyncClient() as client:
         url = f"https://www.vlr.gg/event/matches/{vlrgg_event}/"
         resp = await client.get(url)
-        document = BeautifulSoup(resp.text, 'lxml')
+        document = BeautifulSoup(resp.text, "lxml")
         wf_title = document.select_one('h1[class="wf-title"]').text.strip()  # type: ignore
         wf_card_list = document.select('div[class="wf-card"]')
         for wf_card in wf_card_list:
-            for item in wf_card.select('a'):
+            for item in wf_card.select("a"):
                 match_url = f"https://www.vlr.gg{item['href']}"
                 teams = []
                 for team in item.select("div[class='match-item-vs-team-name']"):
@@ -102,9 +102,9 @@ async def vlrgg_event_to_calendar(vlrgg_event: str) -> list[Event]:
     return events
 
 
-@router.get('/event/matches', summary='Valorant 赛事订阅', include_in_schema=False)
-@router.get('/event/matches.ics', summary='Valorant 赛事订阅')
-async def vlrgg(events: list[str] = Query([], description='赛事ID')):
+@router.get("/event/matches", summary="Valorant 赛事订阅", include_in_schema=False)
+@router.get("/event/matches.ics", summary="Valorant 赛事订阅")
+async def vlrgg(events: list[str] = Query([], description="赛事ID")):
     """赛程数据源自: https://www.vlr.gg/events"""
     results = await asyncio.gather(*[vlrgg_event_to_calendar(event) for event in events])
     c = Calendar()

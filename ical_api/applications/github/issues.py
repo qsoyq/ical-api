@@ -7,19 +7,21 @@ from fastapi import APIRouter, Path, Query
 from fastapi.responses import PlainTextResponse
 from ics import Calendar, Event
 
-from ical_api.applications.github.schemas.issues import (GithubIssue,
-                                                         GithubIssueDirection,
-                                                         GithubIssueSort,
-                                                         GithubIssueState)
+from ical_api.applications.github.schemas.issues import (
+    GithubIssue,
+    GithubIssueDirection,
+    GithubIssueSort,
+    GithubIssueState,
+)
 
-router = APIRouter(tags=['iCalendar'], prefix='/ics/github/issues')
+router = APIRouter(tags=["iCalendar"], prefix="/ics/github/issues")
 
 logger = logging.getLogger(__file__)
 
 
 def github_issues_to_calendar(issues: list[GithubIssue]) -> list[Event]:
     events = []
-    pattern = re.compile(r'\(@(.*)\)')
+    pattern = re.compile(r"\(@(.*)\)")
     for issue in issues:
         e = Event()
         result = re.search(pattern, issue.title)
@@ -42,15 +44,15 @@ def github_issues_to_calendar(issues: list[GithubIssue]) -> list[Event]:
     return events
 
 
-@router.get('/repos/{owner}/{repo}/issues', summary='Github Repo Issues To iCalendar', include_in_schema=False)
-@router.get('/repos/{owner}/{repo}/issues.ics', summary='Github Repo Issues To iCalendar')
+@router.get("/repos/{owner}/{repo}/issues", summary="Github Repo Issues To iCalendar", include_in_schema=False)
+@router.get("/repos/{owner}/{repo}/issues.ics", summary="Github Repo Issues To iCalendar")
 async def github_repo_issues(
-    token: str = Query(..., description='Github API Token'),
-    owner: str = Path(..., description='Github Repo Owner'),
-    repo: str = Path(..., description='Github Repo Name'),
+    token: str = Query(..., description="Github API Token"),
+    owner: str = Path(..., description="Github Repo Owner"),
+    repo: str = Path(..., description="Github Repo Name"),
     milestone: str | int | None = Query(None),
     assignee: str | None = Query(None),
-    type_: str | None = Query(None, alias='type'),
+    type_: str | None = Query(None, alias="type"),
     creator: str | None = Query(None),
     mentioned: str | None = Query(None),
     labels: str | None = Query(None),
@@ -58,8 +60,8 @@ async def github_repo_issues(
     sort: GithubIssueSort | None = Query(None),
     direction: GithubIssueDirection | None = Query(None),
     per_page: int = Query(100, ge=1, le=100),
-    page: int | None = Query(None, ge=1),
-    fetch_all: bool = Query(True, description='Fetch all issues, if False, will fetch only the specified page'),
+    page: int = Query(1, ge=1),
+    fetch_all: bool = Query(True, description="Fetch all issues, if False, will fetch only the specified page"),
 ):
     """
     参数详见文档: https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
@@ -70,23 +72,23 @@ async def github_repo_issues(
     """
     url = f"https://api.github.com/repos/{owner}/{repo}/issues"
     headers = {
-        'Accept': 'application/vnd.github+json',
-        'Authorization': f"Bearer {token}",
-        'X-GitHub-Api-Version': '2022-11-28',
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {token}",
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     params = {
-        'milestone': milestone,
-        'assignee': assignee,
-        'type': type_,
-        'creator': creator,
-        'mentioned': mentioned,
-        'labels': labels,
-        'state': state,
-        'sort': sort,
-        'direction': direction,
-        'per_page': per_page,
-        'page': page,
+        "milestone": milestone,
+        "assignee": assignee,
+        "type": type_,
+        "creator": creator,
+        "mentioned": mentioned,
+        "labels": labels,
+        "state": state,
+        "sort": sort,
+        "direction": direction,
+        "per_page": per_page,
+        "page": page,
     }
 
     params = {k: v for k, v in params.items() if v is not None}
@@ -100,6 +102,9 @@ async def github_repo_issues(
             github_issues.extend([GithubIssue(**issue) for issue in issues])
             if fetch_all is False or len(issues) < per_page:
                 break
+
+            page += 1
+            params["page"] = page
 
     events = github_issues_to_calendar(github_issues)
 

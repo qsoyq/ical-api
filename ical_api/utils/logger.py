@@ -4,27 +4,27 @@ import click
 
 
 class ColorFormatter(logging.Formatter):
-    _format = '%(asctime)s %(levelname)s %(message)s'
-    _datefmt = '%Y-%m-%d %H:%M:%S'
+    _format = "%(asctime)s %(levelname)s %(message)s"
+    _datefmt = "%Y-%m-%d %H:%M:%S"
 
     log_colors: dict[int, list[tuple[str, str]]] = {
         logging.DEBUG: [
-            ('%(levelname)s', 'cyan'),
+            ("%(levelname)s", "cyan"),
         ],
         logging.INFO: [
-            ('%(levelname)s', 'green'),
+            ("%(levelname)s", "green"),
         ],
         logging.WARNING: [
-            ('%(levelname)s', 'yellow'),
-            ('%(message)s', 'yellow'),
+            ("%(levelname)s", "yellow"),
+            ("%(message)s", "yellow"),
         ],
         logging.ERROR: [
-            ('%(levelname)s', 'red'),
-            ('%(message)s', 'red'),
+            ("%(levelname)s", "red"),
+            ("%(message)s", "red"),
         ],
         logging.CRITICAL: [
-            ('%(levelname)s', 'bright_red'),
-            ('%(message)s', 'bright_red'),
+            ("%(levelname)s", "bright_red"),
+            ("%(message)s", "bright_red"),
         ],
     }
 
@@ -48,9 +48,9 @@ def init_logger(log_level: int):
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
     root_logger.addHandler(handler)
-    logging.basicConfig(level=log_level, format='%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=log_level, format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
-    logger = logging.getLogger('uvicorn.access')
+    logger = logging.getLogger("uvicorn.access")
     handler = logging.StreamHandler()
     handler.setFormatter(color_formatter)
     logger.addHandler(handler)

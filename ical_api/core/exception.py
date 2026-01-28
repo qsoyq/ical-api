@@ -15,17 +15,17 @@ def register_exception_handler(app: FastAPI):
 
 
 def httpx_timeout_exception_handler(request: Request, exc: Exception) -> Response:
-    req = getattr(exc, '_request', None)
+    req = getattr(exc, "_request", None)
     url = req.url if req else None
     logger.warning(f"[Gateway Timeout] from: {request.url}, to: {url}")
     return Response(
-        content='Gateway timeout',
+        content="Gateway timeout",
         status_code=504,
     )
 
 
 def not_implemented_error_handler(request: Request, exc: Exception):
-    route = request.scope['route']
+    route = request.scope["route"]
     msg = f"NotImplementedError\n\n{route.name}\n{route.path}\n\n{exc}"
     return Response(
         content=msg,

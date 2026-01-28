@@ -15,8 +15,8 @@ async def lifespan(app: FastAPI):
 
 
 async def startup_event(app: FastAPI):
-    logger.info('startup')
+    logger.info("startup")
 
 
 async def shutdown(app: FastAPI):
-    logger.info('shutdown')
+    logger.info("shutdown")

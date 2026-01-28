@@ -7,7 +7,7 @@ class GithubTestSettings(BaseSettings):
     test_github_owner: str | None = None
     test_github_repo: str | None = None
 
-    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 class TestSettings(BaseModel):
