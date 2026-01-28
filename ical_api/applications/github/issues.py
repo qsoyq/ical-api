@@ -28,7 +28,7 @@ def github_issues_to_calendar(issues: list[GithubIssue]) -> list[Event]:
         result = re.search(date_pattern, issue.title)
         if not result:
             continue
-        title = re.sub(date_pattern, "", issue.title)
+        title = re.sub(date_pattern, "", issue.title).strip()
         datetime_str = result.group(1)
         end = dateparser.parse(datetime_str)
         begin = end
