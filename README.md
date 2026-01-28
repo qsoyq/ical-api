@@ -2,6 +2,12 @@
 
 Calendar subscription api
 
+## Run
+
+```bash
+uv run ical-api-server
+```
+
 ## Install
 
 ```bash

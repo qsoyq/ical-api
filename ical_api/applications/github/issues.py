@@ -21,12 +21,14 @@ logger = logging.getLogger(__file__)
 
 def github_issues_to_calendar(issues: list[GithubIssue]) -> list[Event]:
     events = []
-    pattern = re.compile(r"\(@(.*)\)")
+    # 用于在标题中匹配时间信息
+    date_pattern = re.compile(r"\(@(.*)\)")
     for issue in issues:
         e = Event()
-        result = re.search(pattern, issue.title)
+        result = re.search(date_pattern, issue.title)
         if not result:
             continue
+        title = re.sub(date_pattern, "", issue.title)
         datetime_str = result.group(1)
         end = dateparser.parse(datetime_str)
         begin = end
@@ -35,7 +37,7 @@ def github_issues_to_calendar(issues: list[GithubIssue]) -> list[Event]:
             continue
         e.begin = begin
         e.end = end
-        e.name = issue.title
+        e.name = title
         e.description = issue.body
         e.url = issue.html_url
         e.uid = str(issue.id)
