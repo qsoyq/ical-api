@@ -10,5 +10,5 @@ class GithubTestSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
-class TestSettings(BaseModel):
+class AppTestSettings(BaseModel):
     github: GithubTestSettings = GithubTestSettings()
