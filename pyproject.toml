@@ -29,7 +29,7 @@ dependencies = [
     "ics>=0.7.2",
     "bs4>=0.0.2",
     "dateparser>=1.2.2",
-    "lxml>=6.0.2",
+    "lxml>=6.1.0",
 ]
 
 [project.scripts]
