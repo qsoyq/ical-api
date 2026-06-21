@@ -19,6 +19,53 @@ fetch_vlrgg_match_time_semaphore = asyncio.Semaphore(AppSettings().vlrgg.fetch_m
 vlrgg_match_time_memo: dict[str, int] = {}
 
 
+def parse_vlrgg_event_title(document: BeautifulSoup) -> str:
+    for selector in ("h1.event-header-main-title", "h1.wf-title"):
+        title = document.select_one(selector)
+        if title:
+            title_text = title.get_text(" ", strip=True)
+            if title_text:
+                return title_text
+    raise ValueError("can't parse VLR.gg event title")
+
+
+def parse_vlrgg_match_time(document: BeautifulSoup) -> datetime | None:
+    tag = document.select_one("div.moment-tz-convert[data-utc-ts]")
+    if not tag:
+        return None
+
+    utc_ts = tag.get("data-utc-ts")
+    if not isinstance(utc_ts, str):
+        return None
+
+    utc_ts = f"{utc_ts} EDT"
+    parsed = dateparser.parse(utc_ts)
+    return parsed if isinstance(parsed, datetime) else None
+
+
+def parse_vlrgg_event_matches(document: BeautifulSoup, wf_title: str) -> list[Event]:
+    events = []
+    for item in document.select("a.wf-module-item.match-item[href]"):
+        match_href = item.get("href")
+        if not isinstance(match_href, str):
+            continue
+
+        teams = []
+        for team_text in item.select("div.match-item-vs-team-name div.text-of"):
+            team = team_text.get_text(" ", strip=True)
+            if team:
+                teams.append(team)
+        if not teams:
+            continue
+
+        e = Event()
+        e.name = f"{' vs '.join(teams)}"
+        e.description = wf_title
+        e.url = match_href if match_href.startswith("https://") else f"https://www.vlr.gg{match_href}"
+        events.append(e)
+    return events
+
+
 def get_cached_vlrgg_match_time(url: str) -> datetime | None:
     global vlrgg_match_time_memo
 
@@ -48,13 +95,8 @@ async def fetch_vlrgg_event_match_time(url: str) -> tuple[str, datetime | None]:
             resp = await client.get(url)
             resp.raise_for_status()
             document = BeautifulSoup(resp.text, "lxml")
-            tag = document.select_one("div[class='moment-tz-convert']")
-            match_datetime = None
-            if tag:
-                utc_ts = tag.attrs["data-utc-ts"]
-                utc_ts = f"{utc_ts} EDT"
-                logger.debug(f"[VLRGG Event Match Time]: {utc_ts} - {url}")
-                match_datetime = dateparser.parse(utc_ts)
+            match_datetime = parse_vlrgg_match_time(document)
+            logger.debug(f"[VLRGG Event Match Time]: {match_datetime} - {url}")
             if match_datetime:
                 vlrgg_match_time_memo[url] = int(match_datetime.timestamp())
             return (url, match_datetime)
@@ -81,23 +123,10 @@ async def vlrgg_event_to_calendar(vlrgg_event: str) -> list[Event]:
     async with httpx.AsyncClient() as client:
         url = f"https://www.vlr.gg/event/matches/{vlrgg_event}/"
         resp = await client.get(url)
+        resp.raise_for_status()
         document = BeautifulSoup(resp.text, "lxml")
-        wf_title = document.select_one('h1[class="wf-title"]').text.strip()  # type: ignore
-        wf_card_list = document.select('div[class="wf-card"]')
-        for wf_card in wf_card_list:
-            for item in wf_card.select("a"):
-                match_url = f"https://www.vlr.gg{item['href']}"
-                teams = []
-                for team in item.select("div[class='match-item-vs-team-name']"):
-                    team_text = team.select_one("div[class='text-of']")
-                    if team_text:
-                        teams.append(team_text.text.strip())
-
-                e = Event()
-                e.name = f"{' vs '.join(teams)}"
-                e.description = f"{wf_title}"
-                e.url = match_url
-                events.append(e)
+        wf_title = parse_vlrgg_event_title(document)
+        events = parse_vlrgg_event_matches(document, wf_title)
     await add_vlrgg_event_march_time(events)
     return events
 
