@@ -49,6 +49,24 @@ uv run mypy ical_api tests
 
 GitHub integration tests require the optional `test_github_token`, `test_github_owner`, and `test_github_repo` values in `.env`. They are skipped when those values are absent.
 
+External network integration tests are disabled by default because they depend on third-party site availability and page structure. Run them explicitly with:
+
+```bash
+RUN_EXTERNAL_INTEGRATION_TESTS=1 uv run pytest -q
+```
+
+To run only the external site tests:
+
+```bash
+RUN_EXTERNAL_INTEGRATION_TESTS=1 uv run pytest -q tests/routes_test.py::test_vlrgg tests/routes_test.py::test_gofans
+```
+
+To run only the GitHub issues integration test after configuring the required `.env` values:
+
+```bash
+uv run pytest -q tests/routes_test.py::test_github_issues
+```
+
 ## Build
 
 ```bash
