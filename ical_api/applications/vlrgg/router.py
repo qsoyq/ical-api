@@ -15,7 +15,9 @@ router = APIRouter(tags=["iCalendar"], prefix="/ics/vlrgg")
 
 logger = logging.getLogger(__file__)
 
-fetch_vlrgg_match_time_semaphore = asyncio.Semaphore(AppSettings().vlrgg.fetch_match_time_semaphore)
+vlrgg_settings = AppSettings().vlrgg
+fetch_vlrgg_match_time_semaphore = asyncio.Semaphore(vlrgg_settings.fetch_match_time_semaphore)
+vlrgg_fetch_timeout = httpx.Timeout(vlrgg_settings.fetch_timeout)
 vlrgg_match_time_memo: dict[str, int] = {}
 
 
@@ -91,9 +93,13 @@ async def fetch_vlrgg_event_match_time(url: str) -> tuple[str, datetime | None]:
         return (url, cached)
 
     async with fetch_vlrgg_match_time_semaphore:
-        async with httpx.AsyncClient() as client:
-            resp = await client.get(url)
-            resp.raise_for_status()
+        async with httpx.AsyncClient(timeout=vlrgg_fetch_timeout) as client:
+            try:
+                resp = await client.get(url)
+                resp.raise_for_status()
+            except httpx.HTTPError as error:
+                logger.warning(f"can't fetch match time from VLR.gg: {url} - {error}")
+                return (url, None)
             document = BeautifulSoup(resp.text, "lxml")
             match_datetime = parse_vlrgg_match_time(document)
             logger.debug(f"[VLRGG Event Match Time]: {match_datetime} - {url}")
@@ -120,7 +126,7 @@ async def add_vlrgg_event_march_time(events: list[Event]):
 
 async def vlrgg_event_to_calendar(vlrgg_event: str) -> list[Event]:
     events = []
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=vlrgg_fetch_timeout) as client:
         url = f"https://www.vlr.gg/event/matches/{vlrgg_event}/"
         resp = await client.get(url)
         resp.raise_for_status()

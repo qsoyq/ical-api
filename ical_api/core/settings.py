@@ -20,6 +20,7 @@ class HttpAuthSettings(BaseSettings):
 class VlrggSettings(BaseSettings):
     # calander
     fetch_match_time_semaphore: int = 15
+    fetch_timeout: float = 30.0
     model_config = SettingsConfigDict(env_prefix="vlrgg_", extra="ignore")
 
 

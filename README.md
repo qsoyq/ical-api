@@ -112,6 +112,7 @@ Common variables:
 basic_auth_username
 basic_auth_password
 vlrgg_fetch_match_time_semaphore
+vlrgg_fetch_timeout
 http_host
 http_port
 http_reload
