@@ -21,15 +21,15 @@ dependencies = [
     "pip",
     "pytest-asyncio",
     "pydantic-settings",
-    "pytz>=2025.2",
+    "pytz>=2026.2",
     "asyncache>=0.3.1",
     "cachetools>=5.5.2",
     "click>=8.3.1",
     "requests>=2.32.5",
     "ics>=0.7.2",
     "bs4>=0.0.2",
-    "dateparser>=1.2.2",
-    "lxml>=6.0.2",
+    "dateparser>=1.4.1",
+    "lxml>=6.1.0",
 ]
 
 [project.scripts]
@@ -128,8 +128,13 @@ explicit_package_bases = true
 module = [
     "asyncache",
     "bs4",
+    "cachetools",
+    "dateparser",
     "ics",
     "ics.*",
+    "pytz",
+    "requests",
+    "requests.*",
 ]
 ignore_missing_imports = true
 follow_untyped_imports = true

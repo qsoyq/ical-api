@@ -1,0 +1,33 @@
+name: Bug report
+description: Report broken or unexpected behavior.
+title: "fix: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: Background
+      description: What happened and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: Steps, request URLs, parameters, or sample input.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      description: How the fix should be verified.
+    validations:
+      required: true
