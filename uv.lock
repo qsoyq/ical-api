@@ -510,7 +510,7 @@ requires-dist = [
     { name = "fastapi" },
     { name = "httpx", extras = ["http2", "socks"] },
     { name = "hypercorn" },
-    { name = "ics", specifier = ">=0.7.2" },
+    { name = "ics", specifier = ">=0.7.3" },
     { name = "ipython" },
     { name = "lxml", specifier = ">=6.1.0" },
     { name = "mypy" },
@@ -531,7 +531,7 @@ requires-dist = [
 
 [[package]]
 name = "ics"
-version = "0.7.2"
+version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "arrow" },
@@ -540,9 +540,9 @@ dependencies = [
     { name = "six" },
     { name = "tatsu" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/43/fa/2cb7cbe23566140f011da4fec280d4873da4389c8b838bb3e5ce3fc39b16/ics-0.7.2.tar.gz", hash = "sha256:6743539bca10391635249b87d74fcd1094af20b82098bebf7c7521df91209f05", size = 190643, upload-time = "2022-07-06T11:25:41.666Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/9d/f1fa704c153351f679245c0f1dc0099df2d5e3ddb94a06810403a8931bef/ics-0.7.3.tar.gz", hash = "sha256:2dcd6876e8c913d40db76f1f1ca47bccd1c162178c73f69fbbedca1b844eface", size = 191007, upload-time = "2026-04-15T09:44:43.042Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0a/95/e04dea5cf29bdf5005f5aa7ccf0a2f9724b877722d89f8286dc3785a7cdc/ics-0.7.2-py2.py3-none-any.whl", hash = "sha256:5fcf4d29ec6e7dfcb84120abd617bbba632eb77b097722b7df70e48dbcf26103", size = 40086, upload-time = "2022-07-06T11:25:36.536Z" },
+    { url = "https://files.pythonhosted.org/packages/99/cd/b8b730bd5804554643610d15954c0fe4eac6ddfe8e78b4396a67c3cae93d/ics-0.7.3-py2.py3-none-any.whl", hash = "sha256:519f633f2e3d7b1528847e990a58dcb8807a2fffdcfd9dd880d1d5094d456af7", size = 40173, upload-time = "2026-04-15T09:44:41.307Z" },
 ]
 
 [[package]]
