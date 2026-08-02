@@ -21,7 +21,7 @@ dependencies = [
     "pip",
     "pytest-asyncio",
     "pydantic-settings",
-    "pytz>=2026.2",
+    "pytz>=2026.3.post1",
     "asyncache>=0.3.1",
     "cachetools>=5.5.2",
     "click>=8.3.1",
