@@ -28,7 +28,7 @@ dependencies = [
     "requests>=2.34.2",
     "ics>=0.7.3",
     "bs4>=0.0.2",
-    "dateparser>=1.4.1",
+    "dateparser>=1.4.2",
     "lxml>=6.1.1",
 ]
 
